@@ -33,34 +33,36 @@ public class HibernateRunner {
              Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            User user = User.builder()
-                    .username("ivan2@gmail.com")
-                    .firstname("Ivan")
-                    .lastname("Ivanov")
-                    .info("""
-                            {
-                                "name": "Ivan",
-                                "id": 25
-                            }
-                            """)
-                    .birthDate(new Birthday(LocalDate.of(2000, 1, 19)))
-                    .role(Role.ADMIN)
-                    .build();
-            session.save(user);
+//            User user = User.builder()
+//                    .username("ivan2@gmail.com")
+//                    .firstname("Ivan")
+//                    .lastname("Ivanov")
+//                    .info("""
+//                            {
+//                                "name": "Ivan",
+//                                "id": 25
+//                            }
+//                            """)
+//                    .birthDate(new Birthday(LocalDate.of(2000, 1, 20)))
+//                    .role(Role.ADMIN)
+//                    .build();
+////            session.delete(user);
+            // https://i.ibb.co/kGCqRDD/image.png
+            User user1 = session.get(User.class, "ivan2@gmail.com");
+            user1.setLastname("Ivanov3");
+            session.flush(); // сливаем состояние 1lvl кеша в базу данных
+
+            User user2 = session.get(User.class, "ivan2@gmail.com");
+            User user3 = session.get(User.class, "ivan1@gmail.com");
+
+            System.out.println(session.isDirty());
+            // удаление сущностей
+//            session.evict(user1);
+//            session.clear(); // чистит кеш
+//            session.close();
 
             session.getTransaction().commit();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }
